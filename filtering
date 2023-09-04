@@ -1,0 +1,40 @@
+# for filtering function you can use WHERE clause, AND, OR, IN,NOT IN operator, IS NULL, IS NOT NULL
+# 1. filtering employee names with departement "Web Developer" from empolyees table
+SELECT first_name
+department
+FROM employees
+WHERE department = 'Web Developer'
+
+
+# The AND operator displays records if all conditions separated by AND are TRUE
+# 2. filtering employee with salary 2022 >=10000 where store id < 5
+SELECT first_name, store_city_id, salary_2022
+FROM employees
+WHERE store_city_id < 5
+AND salary_2022 >=10000
+
+
+# The OR operator displays records if any of the conditions are separated by OR is TRUE
+# 3. filtering employee with salary 2022>= 10000 or store city id < 5
+SELECT first_name, store_city_id, salary_2022
+FROM employees
+WHERE store_city_id < 5
+OR salary_2022 >=10000
+
+# The IN operator is used to specify multiple values in the WHERE clause. The IN operator is an abbreviation for several OR conditions
+# 4. filtering sales of Mangga, Jeruk, Anggur in store city id 3 and qty >=10
+SELECT * FROM sales
+WHERE  product_name IN ('Mangga', 'Jeruk', 'Anggur')
+AND store_city_id = 3
+AND quantity >= 10
+
+# 5. filtering sales is not pepaya, semangka, anggur, jeruk in store city 3,4,5
+SELECT * FROM sales
+WHERE  product_name NOT IN ('Pepaya', 'Semangka', 'Anggur', 'Jeruk')
+AND store_city_id IN (3,4,5)
+
+
+# IS NULL is used for filtering null value
+# 5. filtering employee data with no email
+SELECT * FROM employees
+WHERE email IS NULL
