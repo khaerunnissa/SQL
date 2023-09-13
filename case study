@@ -1,0 +1,121 @@
+# 1. Using the sales data, perform a query that displays the record on which date the least amount of Mangga fruit was sold?
+  SELECT product_name,
+	    quantity,
+	    purchase_date
+FROM sales
+WHERE product_name = 'Mangga'
+ORDER BY quantity ASC
+
+
+# 2. Using the employees data, perform a query that returns/displays all employee salary records whose first name contains the letter 'ba'.
+  SELECT first_name
+	, salary_2020
+	, salary_2021
+	, salary_2022
+FROM employees
+WHERE LOWER(first_name) LIKE '%Ba%'
+
+  
+# 3. Using employees data, perform a query that returns/displays records of average employee salary per year, rounded to 2 digits behind the comma.
+select 
+	round(avg(salary_2020),2) AS rata2_gaji_2020,
+	round(avg(salary_2021),2) AS rata2_gaji_2021,
+	round(avg(salary_2022),2) rata2_gaji_2022
+from employees
+
+
+# 4. Using the employees data, perform a query that returns/displays records of the names of employees residing in the Yogyakarta and West Java stores
+SELECT * FROM employees 
+WHERE store_city_id IN 
+	(SELECT store_city_id FROM region 
+  	WHERE region IN ('Yogyakarta','Jawa Barat'))
+
+  
+# 5. Using the sales data perform a query that returns/displays the records of total quantity of Mango and Apple fruits for 3 weeks after Eid al-Fitr 2022 (2nd May 2022)!
+  SELECT product_name, 
+      SUM (quantity) AS total_quantity 
+FROM sales 
+WHERE purchase_date BETWEEN '2022-05-02' AND '2022-05-23' 
+AND product_name IN ('Mangga', 'Apel') 
+GROUP BY product_name
+
+
+# 6. Using employee_data and region_data perform a query that returns/displays records of
+all employees who work in Bali and Yogyakarta, use the Subquery method!
+SELECT * FROM employees
+WHERE store_city_id IN 
+					(SELECT store_city_id FROM region
+					WHERE region IN ('Bali', 'Yogyakarta'))
+
+
+# 7. Using employees data, perform a query that returns/displays the number of employee records based on their salary category at store 9 in 2020. The categories are LOWER, MIDDLE, and HIGH. For the LOWER category in the range : < 4000; MIDDLE: >= 4000 - 7000; HIGHER: > 7000
+SELECT COUNT (employee_id),
+		CASE 
+			WHEN salary_2020 < 4000 THEN 'Lower'
+			WHEN salary_2020 >= 4000 AND salary_2020 <= 7000 THEN 'Middle'
+			ELSE 'Higher'
+		END AS kategori_gaji 
+FROM employees
+WHERE store_city_id = 9
+GROUP BY kategori_gaji
+
+
+  # 8. Using the sales data, perform a query that returns/displays the average total revenue in the Sumetera and Kalimantan stores.
+SELECT * FROM sales
+WITH tabel_pendapatan AS (
+SELECT 	s.product_name,
+	      SUM(s.quantity*s.price_per_kg) ttl_pendapatan,
+      	r.region
+FROM sales AS s
+LEFT JOIN region r
+ON s.store_city_id = r.store_city_id
+WHERE r.region IN ('Sumatera', 'Kalimantan')
+GROUP BY 
+	s.product_name,
+	r.region
+)
+
+SELECT region,
+	ROUND(AVG(ttl_pendapatan),2) rata2_ttl_pendapatan
+FROM tabel_pendapatan
+GROUP BY region
+
+
+  # 9. Using sales data, perform a query that returns/displays the average total revenue in stores Yogyakarta and Sulawesi in 2021. Clue: use the WITH method
+WITH table_a AS (
+    SELECT product_name, 
+       store_city_id,
+       SUM(quantity*price_per_kg) as total 
+FROM sales
+WHERE purchase_date BETWEEN '2021-01-01' AND '2021-12-31' 
+GROUP BY product_name, store_city_id 
+ORDER BY store_city_id
+),
+
+avg_amount_per_region AS (SELECT store_city_id,
+                          ROUND(AVG(total),2) AS avg_total
+FROM table_a
+GROUP BY store_city_id)
+
+SELECT rg.region, avg_amount.avg_total 
+FROM avg_amount_per_region AS avg_amount
+LEFT JOIN region AS rg
+ON avg_amount.store_city_id = rg.store_city_id
+WHERE region IN ('Yogyakarta','Sulawesi')
+
+
+# 10. Using sales data and region_data perform a query that returns/displays records of
+total revenue from fruit sales outside Java and Java, categorize the region based on the island,
+e.g. Bandung is part of Java island
+SELECT
+CASE 
+	WHEN store_city_id IN (SELECT store_city_id FROM region
+     						WHERE region IN ('Jawa Timur','Yogyakarta', 'Jawa Barat', 'Jawa Tengah', 'Bandung', 'Jakarta')) 
+	 		THEN 'Jawa'
+    WHEN store_city_id IN(SELECT store_city_id FROM region
+     					WHERE region IN ('Bali','Sumatera', 'Sulawesi', 'Kalimantan')) 
+			THEN 'Luar Jawa'
+	END AS pulau,
+	SUM(quantity*price_per_kg) as total_pendapatan
+FROM sales
+GROUP BY pulau
