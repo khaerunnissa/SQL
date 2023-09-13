@@ -1,0 +1,30 @@
+# The LIKE operator is used in the WHERE clause to search for a specific pattern in a column
+
+# 1. Find any values that start with "Be"
+SELECT first_name FROM employees
+WHERE first_name LIKE 'Be%'
+
+# 2. Find any value that end with "on"
+SELECT first_name FROM employees
+WHERE first_name LIKE '%on'
+
+
+# 3. Find any value that have "al" in any position
+SELECT first_name FROM employees
+WHERE first_name LIKE '%al%'
+
+# 4. Find any value that have "al" in the second position
+SELECT first_name FROM employees
+WHERE first_name LIKE '_al%'
+
+# 5. Find any value that start with "c" and are at least 5 character in length
+SELECT first_name FROM employees
+WHERE first_name LIKE 'C____%'
+
+# 6. Find any value that stars with "c" and are at least 3 character in length
+SELECT first_name FROM employees
+WHERE first_name LIKE 'C_%'
+
+# 7.Find any values that start with "c" and ends with "o"
+SELECT first_name FROM employees
+WHERE first_name LIKE 'C%o'
