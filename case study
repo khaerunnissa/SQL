@@ -13,12 +13,11 @@ ORDER BY quantity ASC
 	, salary_2021
 	, salary_2022
 FROM employees
-WHERE LOWER(first_name) LIKE '%Ba%'
+WHERE first_name LIKE 'Ba%'
 
   
 # 3. Using employees data, perform a query that returns/displays records of average employee salary per year, rounded to 2 digits behind the comma.
-select 
-	round(avg(salary_2020),2) AS rata2_gaji_2020,
+select round(avg(salary_2020),2) AS rata2_gaji_2020,
 	round(avg(salary_2021),2) AS rata2_gaji_2021,
 	round(avg(salary_2022),2) rata2_gaji_2022
 from employees
@@ -44,11 +43,12 @@ GROUP BY product_name
 all employees who work in Bali and Yogyakarta, use the Subquery method!
 SELECT * FROM employees
 WHERE store_city_id IN 
-					(SELECT store_city_id FROM region
-					WHERE region IN ('Bali', 'Yogyakarta'))
+		(SELECT store_city_id FROM region
+		WHERE region IN ('Bali', 'Yogyakarta'))
 
 
-# 7. Using employees data, perform a query that returns/displays the number of employee records based on their salary category at store 9 in 2020. The categories are LOWER, MIDDLE, and HIGH. For the LOWER category in the range : < 4000; MIDDLE: >= 4000 - 7000; HIGHER: > 7000
+# 7. Using employees data, perform a query that returns/displays the number of employee records based on their salary category at store 9 in 2020.
+# The categories are LOWER, MIDDLE, and HIGH. For the LOWER category in the range : < 4000; MIDDLE: >= 4000 - 7000; HIGHER: > 7000
 SELECT COUNT (employee_id),
 		CASE 
 			WHEN salary_2020 < 4000 THEN 'Lower'
